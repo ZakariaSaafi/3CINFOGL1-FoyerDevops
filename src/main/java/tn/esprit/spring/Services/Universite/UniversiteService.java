@@ -1,6 +1,7 @@
 package tn.esprit.spring.Services.Universite;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tn.esprit.spring.DAO.Entities.Foyer;
 import tn.esprit.spring.DAO.Entities.Universite;
@@ -10,6 +11,7 @@ import tn.esprit.spring.DAO.Repositories.UniversiteRepository;
 import java.util.List;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class UniversiteService implements IUniversiteService {
     UniversiteRepository repo;
@@ -26,7 +28,7 @@ public class UniversiteService implements IUniversiteService {
 
     @Override
     public Universite findById(long id) {
-        return repo.findById(id).get();
+        return repo.findById(id).orElseThrow(() -> new RuntimeException("Universite not found with id: " + id));
     }
 
     @Override

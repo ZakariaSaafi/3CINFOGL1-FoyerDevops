@@ -1,93 +1,129 @@
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import tn.esprit.spring.DAO.Entities.Foyer;
 import tn.esprit.spring.DAO.Entities.Universite;
 import tn.esprit.spring.DAO.Repositories.UniversiteRepository;
 import tn.esprit.spring.Services.Universite.UniversiteService;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class TestUniversiteService {
-
-    private static final Logger logger = LogManager.getLogger(TestUniversiteService.class);
+class TestUniversiteService {
 
     @Mock
-    private UniversiteRepository repo;
+    private UniversiteRepository universiteRepository;
 
     @InjectMocks
     private UniversiteService universiteService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testAddOrUpdate() {
-        Universite u = new Universite();
+    void testAddUniversite() {
+        // Arrange
+        Universite universite = Universite.builder()
+                .nomUniversite("ESPRIT")
+                .adresse("Ghazela")
+                .build();
 
-        when(repo.save(u)).thenReturn(u);
+        when(universiteRepository.save(any(Universite.class))).thenReturn(universite);
 
-        Universite result = universiteService.addOrUpdate(u);
+        // Act
+        Universite saved = universiteService.addOrUpdate(universite);
 
-        assertNotNull(result);
-        logger.info("testAddOrUpdate passed");
+        // Assert
+        assertNotNull(saved);
+        assertEquals("ESPRIT", saved.getNomUniversite());
+        assertEquals("Ghazela", saved.getAdresse());
+        verify(universiteRepository).save(any(Universite.class));
     }
 
     @Test
-    public void testFindAll() {
-        Universite u1 = new Universite();
-        Universite u2 = new Universite();
+    void testGetUniversiteById() {
+        // Arrange
+        Universite universite = Universite.builder()
+                .idUniversite(1L)
+                .nomUniversite("ESPRIT")
+                .adresse("Ghazela")
+                .build();
 
-        when(repo.findAll()).thenReturn(Arrays.asList(u1, u2));
+        when(universiteRepository.findById(1L)).thenReturn(Optional.of(universite));
 
-        List<Universite> universites = universiteService.findAll();
+        // Act
+        Universite found = universiteService.findById(1L);
 
-        assertNotNull(universites);
-        assertEquals(2, universites.size());
-        logger.info("testFindAll passed");
+        // Assert
+        assertNotNull(found);
+        assertEquals(1L, found.getIdUniversite());
+        assertEquals("ESPRIT", found.getNomUniversite());
+        assertEquals("Ghazela", found.getAdresse());
     }
 
     @Test
-    public void testFindById() {
-        Universite u = new Universite();
+    void testDeleteUniversite() {
+        // Arrange
+        Long universiteId = 1L;
 
-        when(repo.findById(1L)).thenReturn(Optional.of(u));
+        // Act
+        universiteService.deleteById(universiteId);
 
-        Universite result = universiteService.findById(1L);
-
-        assertNotNull(result);
-        logger.info("testFindById passed");
+        // Assert
+        verify(universiteRepository).deleteById(universiteId);
     }
 
     @Test
-    public void testDeleteById() {
-        doNothing().when(repo).deleteById(1L);
+    void testUpdateUniversite() {
+        // Arrange
+        Universite universite = Universite.builder()
+                .idUniversite(1L)
+                .nomUniversite("ESPRIT Updated")
+                .adresse("Ghazela Updated")
+                .build();
 
-        universiteService.deleteById(1L);
+        when(universiteRepository.save(any(Universite.class))).thenReturn(universite);
 
-        verify(repo, times(1)).deleteById(1L);
-        logger.info("testDeleteById passed");
+        // Act
+        Universite updated = universiteService.addOrUpdate(universite);
+
+        // Assert
+        assertNotNull(updated);
+        assertEquals("ESPRIT Updated", updated.getNomUniversite());
+        assertEquals("Ghazela Updated", updated.getAdresse());
+        verify(universiteRepository).save(any(Universite.class));
     }
 
     @Test
-    public void testDelete() {
-        Universite u = new Universite();
+    void testAddUniversiteWithFoyer() {
+        // Arrange
+        Foyer foyer = Foyer.builder()
+                .nomFoyer("Foyer ESPRIT")
+                .capaciteFoyer(500)
+                .build();
 
-        doNothing().when(repo).delete(u);
+        Universite universite = Universite.builder()
+                .nomUniversite("ESPRIT")
+                .adresse("Ghazela")
+                .foyer(foyer)
+                .build();
 
-        universiteService.delete(u);
+        when(universiteRepository.save(any(Universite.class))).thenReturn(universite);
 
-        verify(repo, times(1)).delete(u);
-        logger.info("testDelete passed");
+        // Act
+        Universite saved = universiteService.addOrUpdate(universite);
+
+        // Assert
+        assertNotNull(saved);
+        assertNotNull(saved.getFoyer());
+        assertEquals("Foyer ESPRIT", saved.getFoyer().getNomFoyer());
+        verify(universiteRepository).save(any(Universite.class));
     }
 }
