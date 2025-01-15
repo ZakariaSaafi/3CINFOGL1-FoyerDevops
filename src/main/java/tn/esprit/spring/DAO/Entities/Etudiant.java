@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "T_ETUDIANT")
@@ -18,16 +19,52 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Etudiant implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long idEtudiant;
+    
     String nomEt;
     String prenomEt;
     long cin;
     String ecole;
     LocalDate dateNaissance;
+    
     @ManyToMany(mappedBy = "etudiants")
-    List<Reservation> reservations= new ArrayList<>();
+    List<Reservation> reservations = new ArrayList<>();
 
+    // Implémentation de equals() et hashCode()
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Etudiant etudiant = (Etudiant) o;
+        return idEtudiant == etudiant.idEtudiant;
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(idEtudiant);
+    }
+
+    public void setId(long l) {
+    }
+
+    public void setNom(String string) {
+    }
+
+    public void setPrenom(String string) {
+    }
+
+    public Short getId() {
+        return null;
+    }
+
+    public Short getNom() {
+        return null;
+    }
+
+    public Short getPrenom() {
+        return null;
+    }
 }
