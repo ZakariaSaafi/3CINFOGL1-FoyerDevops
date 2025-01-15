@@ -7,6 +7,8 @@ import tn.esprit.spring.DAO.Entities.Etudiant;
 import tn.esprit.spring.DAO.Entities.Foyer;
 import tn.esprit.spring.DAO.Entities.Reservation;
 import tn.esprit.spring.DAO.Entities.Universite;
+import tn.esprit.spring.Services.Foyer.IFoyerService;
+
 
 import java.util.Arrays;
 import java.util.List;
