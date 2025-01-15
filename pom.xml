@@ -20,7 +20,7 @@
 	<repository>
 	         <id>deploymentRepo</id>
 		<name>Nexus</name>
-		<url>http://192.168.33.10:8081/repository/maven-central/</url>
+		<url>http://localhost:8081/repository/maven-central/</url>
 	</repository>
     </distributionManagement>
     <dependencies>
