@@ -32,9 +32,9 @@ class EtudiantServiceTest {
 
         // Création d'un étudiant simulé
         mockEtudiant = new Etudiant();
-        mockEtudiant.setId(1L);
-        mockEtudiant.setNom("Doe");
-        mockEtudiant.setPrenom("John");
+        mockEtudiant.setIdEtudiant(1L);  // Assurez-vous que setIdEtudiant existe
+        mockEtudiant.setNomEt("Doe");
+        mockEtudiant.setPrenomEt("John");
     }
 
     @Test
@@ -47,9 +47,9 @@ class EtudiantServiceTest {
 
         // Vérifications
         assertNotNull(result);
-        assertEquals(mockEtudiant.getId(), result.getId());
-        assertEquals(mockEtudiant.getNom(), result.getNom());
-        assertEquals(mockEtudiant.getPrenom(), result.getPrenom());
+        assertEquals(mockEtudiant.getIdEtudiant(), result.getIdEtudiant());
+        assertEquals(mockEtudiant.getNomEt(), result.getNomEt());
+        assertEquals(mockEtudiant.getPrenomEt(), result.getPrenomEt());
 
         // Vérifier si la méthode save() a été appelée une seule fois
         verify(etudiantRepository, times(1)).save(mockEtudiant);
@@ -85,7 +85,7 @@ class EtudiantServiceTest {
 
         // Vérifications
         assertNotNull(result);
-        assertEquals(mockEtudiant.getId(), result.getId());
+        assertEquals(mockEtudiant.getIdEtudiant(), result.getIdEtudiant());
 
         // Vérifier si la méthode findById() a été appelée une seule fois
         verify(etudiantRepository, times(1)).findById(1L);
@@ -109,4 +109,3 @@ class EtudiantServiceTest {
         verify(etudiantRepository, times(1)).delete(mockEtudiant);
     }
 }
-s
