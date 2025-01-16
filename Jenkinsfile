@@ -9,6 +9,8 @@ pipeline {
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "localhost:8081"
         NEXUS_REPOSITORY = "Foyer"
+        NEXUS_USERNAME = credentials('nexus-credentials')[0]
+        NEXUS_PASSWORD = credentials('nexus-credentials')[1]
         NEXUS_CREDENTIAL_ID = "nexus-credentials"
     }
     
@@ -42,7 +44,7 @@ pipeline {
         stage('NEXUS UPLOAD') {
             steps {
                 script {
-                    // Read POM xml file using 'readMavenPom' step , this step 'readMavenPom' is included in: https://plugins.jenkins.io/pipeline-utility-steps
+                    // Read POM xml file using 'readMavenPom' step
                     pom = readMavenPom file: "pom.xml";
                     // Find built artifact under target folder
                     filesByGlob = findFiles(glob: "target/*.jar");
@@ -52,10 +54,8 @@ pipeline {
                     artifactPath = filesByGlob[0].path;
                     // Assign to a boolean response verifying If the artifact name exists
                     artifactExists = fileExists artifactPath;
-
                     if(artifactExists) {
                         echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-
                         nexusArtifactUploader(
                             nexusVersion: NEXUS_VERSION,
                             protocol: NEXUS_PROTOCOL,
@@ -70,8 +70,7 @@ pipeline {
                                 file: artifactPath,
                                 type: pom.packaging]
                             ]
-                        )
-
+                        );
                     } else {
                         error "*** File: ${artifactPath}, could not be found";
                     }
