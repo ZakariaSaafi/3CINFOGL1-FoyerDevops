@@ -4,12 +4,6 @@ pipeline {
         maven 'M2_HOME'
     }
     
-    environment {
-        // Define Nexus credentials
-        NEXUS_USERNAME = "admin"
-        NEXUS_PASSWORD = "admin"
-    }
-    
     stages {
         stage ('GIT') {
             steps {
@@ -39,23 +33,21 @@ pipeline {
         }
         stage('NEXUS UPLOAD') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'nexus-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                    nexusArtifactUploader(
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: 'localhost:8081',
-                        groupId: 'tn.esprit.spring',
-                        version: '0.0.1-SNAPSHOT',
-                        repository: 'zakaria-maven-hosted',
-                        credentialsId: 'nexus-credentials',
-                        artifacts: [
-                            [artifactId: 'Foyer',
-                             classifier: '',
-                             file: 'target/foyer-0.0.1-SNAPSHOT.jar',
-                             type: 'jar']
-                        ]
-                    )
-                }
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: 'localhost:8081',
+                    groupId: 'tn.esprit.spring',
+                    version: '0.0.1-SNAPSHOT',
+                    repository: 'zakaria-maven-hosted',
+                    credentialsId: 'nexus-credentials',
+                    artifacts: [
+                        [artifactId: 'Foyer',
+                            classifier: '',
+                            file: 'target/foyer-0.0.1-SNAPSHOT.jar',
+                            type: 'jar']
+                    ]
+                )
             }
         }
     }
