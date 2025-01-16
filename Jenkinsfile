@@ -25,20 +25,26 @@ pipeline {
                 bat 'mvn test'
             }
         }
-        stage('NEXUS') {
+        stage ('MAVEN PACKAGE') {
+            steps {
+                bat 'mvn package'
+            }
+        }
+        stage('NEXUS UPLOAD') {
             steps {
                 nexusArtifactUploader(
                     nexusVersion: 'nexus3',
                     protocol: 'http',
                     nexusUrl: 'localhost:8081',
-                    groupId: 'foyer',
-                    version: '1.0.0',
-                    repository: 'zakaria',
-                    credentialsId: 'nexus-credentials', // Jenkins credential ID
+                    groupId: 'tn.esprit',
+                    version: '1.0.0-SNAPSHOT',
+                    repository: 'zakaria-maven-hosted',
+                    credentialsId: 'nexus-credentials',
                     artifacts: [
-                        [artifactId: 'foyer-zakaria-artifact',
-                         type: 'jar',
-                         file: 'builds/*.jar']
+                        [artifactId: 'foyer',
+                         classifier: '',
+                         file: 'target/foyer-1.0.0-SNAPSHOT.jar',
+                         type: 'jar']
                     ]
                 )
             }
