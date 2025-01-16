@@ -6,32 +6,33 @@ pipeline {
     stages {
         stage ('GIT') {
             steps {
-                git branch: 'saafi-zakaria-foyer-devops', url: 'https://github.com/ZakariaSaafi/3CINFOGL1-FoyerDevops.git'
+                git branch: 'saafi-zakaria-foyer-devops', 
+                    url: 'https://github.com/ZakariaSaafi/3CINFOGL1-FoyerDevops.git'
             }
         }
         stage ('MAVEN CLEAN') {
             steps {
-                sh 'mvn clean'
+                bat 'mvn clean'
             }
         }
         stage ('MAVEN COMPILE') {
             steps {
-                sh 'mvn compile'
+                bat 'mvn compile'
             }
         }
         stage ('MAVEN SONARQUBE') {
             steps { 
-                sh 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=Happy@900@900'
+                bat 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=Happy@900@900'
             }    
         }
         stage ('maven test'){
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
         stage ('NEXUS') {
             steps {
-                sh 'mvn deploy -DskipTests' 
+                bat 'mvn deploy -DskipTests' 
             }
         }
     }
