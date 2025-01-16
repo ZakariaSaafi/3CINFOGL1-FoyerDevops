@@ -20,19 +20,27 @@ pipeline {
                 bat 'mvn compile'
             }
         }
-        stage ('MAVEN SONARQUBE') {
-            steps { 
-                bat 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=Happy@900@900'
-            }    
-        }
         stage ('maven test'){
             steps {
                 bat 'mvn test'
             }
         }
-        stage ('NEXUS') {
+        stage('NEXUS') {
             steps {
-                bat 'mvn deploy -DskipTests' 
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: 'localhost:8081',
+                    groupId: 'foyer',
+                    version: '1.0.0',
+                    repository: 'zakaria',
+                    credentialsId: 'nexus-credentials', // Jenkins credential ID
+                    artifacts: [
+                        [artifactId: 'foyer-zakaria-artifact',
+                         type: 'jar',
+                         file: 'builds/*.jar']
+                    ]
+                )
             }
         }
     }
