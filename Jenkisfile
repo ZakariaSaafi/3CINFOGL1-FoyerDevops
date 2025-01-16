@@ -29,14 +29,41 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage ('NEXUS') {
-            steps {
-                sh 'mvn deploy -DskipTests' 
+        stage('Deploy to Nexus') {
+                steps {
+                    echo 'Deploying to Nexus Repository...'
+                    sh """
+                        mvn deploy \
+                        -DaltDeploymentRepository=deploymentRepo::default::http://192.168.33.10:8081/repository/maven-releases/ \
+                        -DskipTests=true
+                     """
+                }
             }
-        }
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t foyer-app .'
+            }
+        }
+        
+        
+    
+        
+         stage('Docker Compose Up') {
+            steps {
+                script {
+                    echo 'Running Docker Compose...'
+                    sh 'docker-compose -f docker-compose.yml up -d'
+                }
+            }
+        }
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    echo 'Pushing Docker image to Docker Hub...'
+                    docker.withRegistry('', 'cred-dockerhub') {
+                        sh 'docker push ranimtlili/foyer-app:latest'
+                    }
+                }
             }
         }
     }
