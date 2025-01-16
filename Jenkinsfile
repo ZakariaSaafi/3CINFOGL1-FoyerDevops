@@ -7,8 +7,8 @@ pipeline {
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "172.19.0.2:8081"
-        NEXUS_REPOSITORY = "zakaria-maven-hosted"
+        NEXUS_URL = "localhost:8081"
+        NEXUS_REPOSITORY = "Foyer"
         NEXUS_CREDENTIAL_ID = "nexus-credentials"
     }
     
