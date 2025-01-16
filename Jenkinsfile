@@ -9,9 +9,9 @@ pipeline {
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "localhost:8081"
         NEXUS_REPOSITORY = "Foyer"
+        NEXUS_USERNAME = "admin"
+        NEXUS_PASSWORD = "admin"
         NEXUS_CREDENTIAL_ID = "nexus-credentials"
-        // Properly bind credentials to environment variables
-        NEXUS_CREDS = credentials('nexus-credentials')
     }
     
     stages {
