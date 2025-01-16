@@ -9,8 +9,7 @@ pipeline {
         // Nexus configurations
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "localhost:8081"
-        NEXUS_REPOSITORY = "Foyer"
+        NEXUS_URL = "http://localhost:8081/repository/Foyer/"
         NEXUS_CREDENTIAL_ID = "nexus-credentials"
         ARTIFACT_VERSION = "${BUILD_NUMBER}"
     }
@@ -59,7 +58,6 @@ pipeline {
                         nexusUrl: NEXUS_URL,
                         groupId: pom.groupId,
                         version: ARTIFACT_VERSION,
-                        repository: NEXUS_REPOSITORY,
                         credentialsId: NEXUS_CREDENTIAL_ID,
                         artifacts: [[
                             artifactId: pom.artifactId,
