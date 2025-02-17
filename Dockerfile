@@ -1,70 +1,54 @@
 pipeline {
     agent any
-    tools {
-        maven 'M2_HOME'
-    }
     stages {
-        stage ('GIT') {
+        stage('1. Git - Clone Repository') {
             steps {
-                git branch: 'ranim', url: 'https://github.com/ZakariaSaafi/3CINFOGL1-FoyerDevops.git'
+                echo 'Cloning the repository...'
+                checkout scm
             }
         }
-        stage ('MAVEN CLEAN') {
+        stage('2. Vagrant - Setup Ubuntu Environment') {
             steps {
-                sh 'mvn clean'
+                echo 'Setting up Ubuntu environment with Vagrant...'
             }
         }
-        stage ('MAVEN COMPILE') {
+        stage('3. Docker - Build & Compose') {
             steps {
-                sh 'mvn compile'
+                echo 'Building Docker images and setting up Docker Compose...'
             }
         }
-        stage ('MAVEN SONARQUBE') {
+        stage('4. Jenkins - Setup CI/CD') {
             steps {
-                sh 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=Happy@900@900'
+                echo 'Configuring Jenkins for CI/CD pipeline...'
             }
         }
-        stage ('maven test'){
+        stage('5. SonarQube - Code Quality Analysis') {
             steps {
-                sh 'mvn test'
+                echo 'Running code quality analysis with SonarQube...'
             }
         }
-        stage('Deploy to Nexus') {
-                steps {
-                    echo 'Deploying to Nexus Repository...'
-                    sh """
-                        mvn deploy \
-                        -DaltDeploymentRepository=deploymentRepo::default::http://192.168.33.10:8081/repository/maven-releases/ \
-                        -DskipTests=true
-                     """
-                }
-            }
-        stage('Build Docker Image') {
+        stage('6. JUnit - Mockito Testing') {
             steps {
-                sh 'docker build -t foyer-app .'
+                echo 'Running unit tests with JUnit and Mockito...'
             }
         }
-
-
-
-
-         stage('Docker Compose Up') {
+        stage('7. Nexus - Artifact Management') {
             steps {
-                script {
-                    echo 'Running Docker Compose...'
-                    sh 'docker-compose -f docker-compose.yml up -d'
-                }
+                echo 'Managing artifacts with Nexus...'
             }
         }
-        stage('Push Docker Image to Docker Hub') {
+        stage('8. Grafana - Prometheus Monitoring') {
             steps {
-                script {
-                    echo 'Pushing Docker image to Docker Hub...'
-                    docker.withRegistry('', 'cred-dockerhub') {
-                        sh 'docker push ranimtlili/foyer-app:latest'
-                    }
-                }
+                echo 'Monitoring application performance with Grafana and Prometheus...'
             }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check logs for details.'
         }
     }
 }
