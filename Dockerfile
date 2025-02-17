@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+    tools {
+        maven 'M2_HOME'
+    }
+    stages {
+        stage ('GIT') {
+            steps {
+                git branch: 'ranim', url: 'https://github.com/ZakariaSaafi/3CINFOGL1-FoyerDevops.git'
+            }
+        }
+        stage ('MAVEN CLEAN') {
+            steps {
+                sh 'mvn clean'
+            }
+        }
+        stage ('MAVEN COMPILE') {
+            steps {
+                sh 'mvn compile'
+            }
+        }
+        stage ('MAVEN SONARQUBE') {
+            steps {
+                sh 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=Happy@900@900'
+            }
+        }
+        stage ('maven test'){
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage('Deploy to Nexus') {
+                steps {
+                    echo 'Deploying to Nexus Repository...'
+                    sh """
+                        mvn deploy \
+                        -DaltDeploymentRepository=deploymentRepo::default::http://192.168.33.10:8081/repository/maven-releases/ \
+                        -DskipTests=true
+                     """
+                }
+            }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t foyer-app .'
+            }
+        }
+
+
+
+
+         stage('Docker Compose Up') {
+            steps {
+                script {
+                    echo 'Running Docker Compose...'
+                    sh 'docker-compose -f docker-compose.yml up -d'
+                }
+            }
+        }
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    echo 'Pushing Docker image to Docker Hub...'
+                    docker.withRegistry('', 'cred-dockerhub') {
+                        sh 'docker push ranimtlili/foyer-app:latest'
+                    }
+                }
+            }
+        }
+    }
+}
