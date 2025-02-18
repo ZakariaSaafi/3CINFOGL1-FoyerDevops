@@ -5,7 +5,7 @@ pipeline {
     }
     tools {
         maven 'Maven'  // Name of the Maven installation configured in Jenkins
-        jdk 'JDK11'   // Name of the JDK installation configured in Jenkins
+            jdk 'JAVA_HOME'  // Name of the JDK installation configured in Jenkins
     }
     stages {
         stage('1. Git - Clone Repository') {
