@@ -4,8 +4,8 @@ pipeline {
         SONARQUBE_SERVER = 'SonarQube'  // Name of your SonarQube server configured in Jenkins
     }
     tools {
-        maven 'Maven'  // Name of the Maven installation configured in Jenkins
-            jdk 'JAVA_HOME'  // Name of the JDK installation configured in Jenkins
+        maven 'M2_HOME'  // Name of the Maven installation configured in Jenkins
+        jdk 'JAVA_HOME'  // Name of the JDK installation configured in Jenkins
     }
     stages {
         stage('1. Git - Clone Repository') {
