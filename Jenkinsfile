@@ -2,6 +2,8 @@ pipeline {
     agent any
     environment {
         SONARQUBE_SERVER = 'SonarQube'  // Name of your SonarQube server configured in Jenkins
+        NEXUS_URL = 'http://localhost:8081/repository/maven-snapshots/'  // URL for the Nexus snapshot repository
+        NEXUS_CREDENTIALS = 'nexus-credentials-id'  // Nexus credentials ID configured in Jenkins
     }
     tools {
         maven 'M2-HOME'
@@ -57,7 +59,13 @@ pipeline {
         }
         stage('7. Nexus - Artifact Management') {
             steps {
-                echo 'Managing artifacts with Nexus...'
+                echo 'Deploying artifact to Nexus...'
+                script {
+                    // Ensure the version in POM is a snapshot version
+                    sh """
+                        mvn clean deploy -DaltDeploymentRepository=deploymentRepo::default::${NEXUS_URL} -DskipTests
+                    """
+                }
             }
         }
         stage('8. Grafana - Prometheus Monitoring') {
