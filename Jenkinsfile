@@ -4,7 +4,7 @@ pipeline {
         SONARQUBE_SERVER = 'SonarQube'  // Name of your SonarQube server configured in Jenkins
     }
     tools {
-        maven 'Maven'
+        maven 'M2-HOME'
         jdk 'JAVA_HOME'  // Name of the JDK installation configured in Jenkins
     }
     stages {
